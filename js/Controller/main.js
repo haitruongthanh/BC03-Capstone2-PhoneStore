@@ -1,10 +1,15 @@
-import { renderList } from "./phoneController.js";
+import {
+  renderCartList,
+  renderList,
+  findIndexCartItem,
+  saveToLocal,
+} from "./phoneController.js";
 
 const BASE_URL = "https://6271e18825fed8fcb5ec0d68.mockapi.io/phone-store";
-const CART_LIST_LOCAL = "CART_LIST_LOCAL";
+export const CART_LIST_LOCAL = "CART_LIST_LOCAL";
 
 let productList = [];
-let cart = [];
+export let cart = [];
 
 const getPhoneList = async function () {
   await axios({
@@ -54,10 +59,7 @@ const renderByType = () => {
 };
 
 let addToCartList = (id) => {
-  console.log(id);
-  let index = cart.findIndex((item) => {
-    return item.id === id;
-  });
+  let index = findIndexCartItem(id);
 
   if (index === -1) {
     let newPhoneCart = { ...productList[id - 1], quantity: 1 };
@@ -67,11 +69,7 @@ let addToCartList = (id) => {
   }
   renderCartQuantity();
   saveToLocal();
-};
-
-const saveToLocal = () => {
-  let cartListJson = JSON.stringify(cart);
-  localStorage.setItem(CART_LIST_LOCAL, cartListJson);
+  renderCartList(cart);
 };
 
 const renderCartQuantity = () => {
@@ -99,9 +97,31 @@ function callFromLocal() {
   }
 }
 
+if (cart.length) {
+  renderCartList(cart);
+}
+
+export const removeCartItem = (id) => {
+  let index = findIndexCartItem(id);
+  cart.splice(index, 1);
+  saveToLocal(cart);
+  renderCartList(cart);
+  renderCartQuantity();
+};
+
+export const increaseQuantity = (id, value) => {
+  let index = findIndexCartItem(id);
+  cart[index].quantity += value;
+  saveToLocal(cart);
+  renderCartList(cart);
+  renderCartQuantity();
+};
+
 renderCartQuantity();
 
 window.renderByType = renderByType;
 window.addToCartList = addToCartList;
 window.renderCartQuantity = renderCartQuantity;
 window.callFromLocal = callFromLocal;
+window.removeCartItem = removeCartItem;
+window.increaseQuantity = increaseQuantity;
