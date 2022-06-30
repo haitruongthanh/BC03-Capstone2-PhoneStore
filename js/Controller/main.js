@@ -111,7 +111,10 @@ export const removeCartItem = (id) => {
 
 export const increaseQuantity = (id, value) => {
   let index = findIndexCartItem(id);
-  cart[index].quantity += value;
+  if (index !== -1) {
+    cart[index].quantity += value;
+  }
+  cart[index].quantity === 0 && cart.splice(index, 1);
   saveToLocal(cart);
   renderCartList(cart);
   renderCartQuantity();
