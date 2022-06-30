@@ -117,6 +117,13 @@ export const increaseQuantity = (id, value) => {
   renderCartQuantity();
 };
 
+const checkout = () => {
+  cart.splice(0, cart.length);
+  saveToLocal(cart);
+  renderCartList(cart);
+  renderCartQuantity();
+};
+
 renderCartQuantity();
 
 window.renderByType = renderByType;
@@ -125,3 +132,4 @@ window.renderCartQuantity = renderCartQuantity;
 window.callFromLocal = callFromLocal;
 window.removeCartItem = removeCartItem;
 window.increaseQuantity = increaseQuantity;
+window.checkout = checkout;
